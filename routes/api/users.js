@@ -5,12 +5,12 @@ const mysql = require('mysql2/promise');
 
 let pool;
 (async function initializePool() {
-  pool = await mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    database: 'new_schema',
-    password: '1234'
-  });
+   pool = await mysql.createPool({
+      host: 'remotemysql.com',
+      user: 'SH4DOuQpda',
+      database: 'SH4DOuQpda',
+      password: 'I7F36btJyy'
+   });
 })();
 
 router.post('/login', async (req, res) => {

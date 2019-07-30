@@ -6,10 +6,10 @@ const mysql = require('mysql2/promise');
 let pool;
 (async function initializePool() {
    pool = await mysql.createPool({
-      host: 'localhost',
-      user: 'root',
-      database: 'new_schema',
-      password: '1234'
+      host: 'remotemysql.com',
+      user: 'SH4DOuQpda',
+      database: 'SH4DOuQpda',
+      password: 'I7F36btJyy'
    });
 })();
 
@@ -42,8 +42,10 @@ router.get('/', async (req, res) => {
 
 router.post('/favorite', async (req, res) => {
    const { userId, vacationId } = req.body;
-   const [results,] = await pool.execute('INSERT INTO user_vacation (user_id, vacation_id) VALUES ((?), (?))', [userId, vacationId]);
-   if (results.insertId) {
+   const [results] = await pool.execute('INSERT INTO user_vacation (user_id, vacation_id) VALUES ((?), (?))', [userId, vacationId]);
+   const [results2] = await pool.execute('UPDATE vacations SET followers = followers + 1 WHERE id=?', [vacationId]);
+   console.log(results2);
+   if (results.insertId && results2.affectedRows) {
       res.send({ id: results.insertId });
    } else {
       res
@@ -55,7 +57,9 @@ router.post('/favorite', async (req, res) => {
 router.delete('/favorite', async (req, res) => {
    const { userId, vacationId } = req.body;
    const [results] = await pool.execute('DELETE FROM user_vacation WHERE user_id=(?) AND vacation_id=(?)', [userId, vacationId]);
-   if (results.deleteId) {
+   const [results2] = await pool.execute('UPDATE vacations SET followers = followers - 1 WHERE id=?', [vacationId]);
+   console.log(results2);
+   if (results.deleteId && results2.affectedRows) {
       res.send({ id: results.deleteId });
    } else {
       res
