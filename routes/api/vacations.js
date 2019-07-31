@@ -94,9 +94,9 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-   const { description, destination, fromDate, toDate, price, picture } = req.body;
-   console.log(req.body);
-   const [results] = await pool.execute('INSERT INTO vacations ( description ,destination ,fromdate, todate ,price, picture) VALUES ((?),(?),(?),(?),(?),(?))', [description, destination, fromDate, toDate, price, picture]);
+   const { description, destination, fromdate, todate, price, picture } = req.body;
+   const { id } = req.params;
+   const [results] = await pool.execute(`UPDATE vacations SET description = ? ,destination = ? ,fromdate = ?, todate = ? ,price = ?, picture = ? WHERE id =?`, [description, destination, fromdate, todate, price, picture, id]);
    if (results) {
       res.send(results);
    } else {
